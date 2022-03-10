@@ -19,7 +19,7 @@ const errLimit = 30;
 let errCount = 0;
 for (const std of Qieyun.iter音韻地位()) {
   const latinigo = tshet(std, std.代表字, {
-    莊組真韻開口歸臻: true,
+    莊組真韻開口歸臻: false, // TODO 處理 true 的情況
     幫組咍韻歸灰: true,
   });
   try {
