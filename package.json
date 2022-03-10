@@ -1,0 +1,15 @@
+{
+  "name": "mallatinigo",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "SyiMyuZya",
+  "license": "MIT",
+  "dependencies": {
+    "qieyun": "^0.12.3"
+  }
+}
