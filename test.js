@@ -11,7 +11,7 @@ const tshet = Function(
   fs.readFileSync('tshet.js').toString(),
 );
 
-//console.log('#', mallatinigi('qia').描述);
+//console.log('#', 拼音反推('uinh').描述);
 
 // TODO 特殊字頭測試
 const throwOnly = false;
