@@ -37,7 +37,7 @@ export function 拼音反推(音節, 反推不規則地位 = false) {
       : 主;
   let 韻 = 韻基到韻[尾].replace(/ /g, '')[韻基元音表.indexOf(韻基元音)];
   if (!韻 || 韻 === '　') {
-    throw new Error(`無法識別韻基 (${音節})`);
+    throw new Error(`無法識別韻基 ${韻基元音}${尾} (${音節})`);
   }
   if (韻 === '唐' && ['y', 'u'].includes(介)) {
     韻 = '陽';
