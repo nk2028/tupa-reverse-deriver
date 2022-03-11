@@ -13,21 +13,21 @@ import { loadQieyun, loadUnt } from './loader.js';
 
 /**
  * @param {AsyncIterable<Item> | Iterable<Item>} iter
- * @param {number} 不規則地位
+ * @param {number} 不規則小韻
  */
 async function runTestOn(
   iter,
-  不規則地位 = 1,
+  不規則小韻 = 1,
   errLimit = 30,
   throwOnly = false,
 ) {
   let errCount = 0;
   for await (const { 地位: std, 拼音, 字頭 } of iter) {
     try {
-      const res = 拼音反推(拼音, 不規則地位);
+      const res = 拼音反推(拼音, 不規則小韻);
       let correct = res.等於(std);
       if (
-        不規則地位 &&
+        不規則小韻 &&
         std.屬於('崇母 開口 眞臻韻 入聲') &&
         res.屬於('崇母 開口 眞臻韻 入聲')
       ) {
