@@ -3,13 +3,14 @@ import * as readline from 'readline';
 
 import Qieyun from 'qieyun';
 
-export async function* loadUnt() {
+export async function* loadUnt(checkAmbiguity = false) {
   const fin = fs.createReadStream('data-unt.txt');
   const rl = readline.createInterface({
     input: fin,
     crlfDelay: Infinity,
   });
   let row = 0;
+  const uniq = new Map();
   for await (const line of rl) {
     row++;
     if (row <= 1) {
@@ -19,12 +20,37 @@ export async function* loadUnt() {
     if (fields[2] === '(deleted)') {
       continue;
     }
+
+    if (checkAmbiguity) {
+      if (!uniq.has(fields[3])) {
+        uniq.set(fields[3], []);
+      }
+      uniq.get(fields[3]).push(fields);
+    }
+
     const 地位 = Qieyun.音韻地位.from編碼(fields[2]);
     yield {
       地位,
       字頭: fields[1],
       拼音: fields[3],
     };
+  }
+
+  if (checkAmbiguity) {
+    for (const [latinigo, rows] of uniq) {
+      if (rows.length <= 1) {
+        continue;
+      }
+      const codes = new Set(rows.map((row) => row[2]));
+      if (codes.size > 1) {
+        console.log(
+          `Averto: Multaj pozicioj kun la sama latinigo: ${latinigo}`,
+        );
+        for (const row of rows) {
+          console.log(row);
+        }
+      }
+    }
   }
 }
 
