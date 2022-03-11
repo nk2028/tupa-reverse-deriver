@@ -22,8 +22,15 @@ for (const std of Qieyun.iter音韻地位()) {
     脣音咍韻歸灰韻: true,
   });
   try {
-    const res = 拼音反推(latinigo);
-    if (!throwOnly && !res.等於(std)) {
+    const res = 拼音反推(latinigo, true);
+    let correct = res.等於(std);
+    if (
+      std.屬於('崇母 開口 眞臻韻 入聲') &&
+      res.屬於('崇母 開口 眞臻韻 入聲')
+    ) {
+      correct = true;
+    }
+    if (!throwOnly && !correct) {
       console.log(std.描述, latinigo);
       console.log('  Eraro:', res.描述);
       errCount += 1;
