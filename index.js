@@ -73,7 +73,7 @@ export function 拼音反推(音節, 反推不規則地位 = false) {
   } else if (['鍾', '虞'].includes(韻)) {
     介 === 'u' || throw介音搭配();
   } else {
-    if (['o', 'u'].includes(主) && 介 === 'w') {
+    if (['o', 'u', 'y'].includes(主) && 介 === 'w') {
       throw介音搭配();
     }
     const 拼寫呼 =
