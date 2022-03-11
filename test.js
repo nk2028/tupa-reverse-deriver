@@ -2,13 +2,14 @@ import 拼音反推 from './index.js';
 
 import { loadQieyun, loadUnt } from './loader.js';
 
-async function runTestOn(iter, errLimit = 30, throwOnly = false) {
+async function runTestOn(iter, 不規則地位, errLimit = 30, throwOnly = false) {
   let errCount = 0;
   for await (const { 地位: std, 拼音, 字頭 } of iter) {
     try {
-      const res = 拼音反推(拼音, true);
+      const res = 拼音反推(拼音, 不規則地位);
       let correct = res.等於(std);
       if (
+        不規則地位 &&
         std.屬於('崇母 開口 眞臻韻 入聲') &&
         res.屬於('崇母 開口 眞臻韻 入聲')
       ) {
@@ -43,8 +44,8 @@ async function runTestOn(iter, errLimit = 30, throwOnly = false) {
 //console.log('#', 拼音反推('uinh').描述);
 
 console.log('Testoj de Qieyun.iter音韻地位()');
-await runTestOn(loadQieyun());
+await runTestOn(loadQieyun(), true);
 
 console.log();
 console.log('Testoj de datumoj de unt');
-await runTestOn(loadUnt());
+await runTestOn(loadUnt(), false);
