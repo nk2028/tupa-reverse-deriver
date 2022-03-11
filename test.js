@@ -11,7 +11,7 @@ const tshet = Function(
   fs.readFileSync('tshet.js').toString(),
 );
 
-console.log('#', 拼音反推('uinh').描述);
+//console.log('#', 拼音反推('uinh').描述);
 
 // TODO 特殊字頭測試
 const throwOnly = false;
@@ -50,4 +50,6 @@ if (errCount) {
     `${errCount}${errCount === errLimit ? '+' : ''} testo(j) malsukcesa(j)`,
   );
   process.exit(1);
+} else {
+  console.log('Ĉiuj testoj estas sukcesaj');
 }
