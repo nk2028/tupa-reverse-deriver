@@ -54,7 +54,6 @@ export async function* loadUnt(checkAmbiguity = false) {
   }
 }
 
-// TODO 特殊字頭測試
 export function* loadQieyun() {
   for (const 地位 of Qieyun.iter音韻地位()) {
     yield {
