@@ -118,10 +118,6 @@ export function 拼音反推(音節, 反推不規則地位 = false) {
       if (['i', 'e', 'ae'].includes(主) && 鈍介音) {
         throw new Error(`莊組以外銳音聲母不可配B類 (${音節})`);
       }
-    } else {
-      // XXX 個別韻搭配
-      // - [ ] 蒸
-      // - [ ] 幽
     }
 
     if (
@@ -130,6 +126,23 @@ export function 拼音反推(音節, 反推不規則地位 = false) {
     ) {
       重 = ['y', 'u'].includes(介) ? 'B' : 'A';
     }
+  }
+  // 個別韻介音搭配檢查
+  if (韻 === '蒸') {
+    if (主 == 'i' && ['', 'w'].includes(介)) {
+      throw new Error(`蒸韻不可用A類 (${音節})`);
+    }
+    if (呼 === '合' || ['幫', '滂', '並', '明'].includes(母)) {
+      if (!(主 == 'i' && ['y', 'u'].includes(介))) {
+        throw new Error(`蒸韻脣音或合口當用B類 (${音節})`);
+      }
+    } else if (![...'見溪群疑云影曉匣'].includes(母)) {
+      if (!(主 === 'y' && !介)) {
+        throw new Error(`蒸韻銳聲母當用C類 (${音節})`);
+      }
+    }
+  } else if (韻 === '幽') {
+    // TODO 幽：幫組為B類，銳聲母為A類（上面已判定過），見影組AB兩可
   }
 
   // 調整
