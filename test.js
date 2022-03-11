@@ -11,7 +11,7 @@ const tshet = Function(
   fs.readFileSync('tshet.js').toString(),
 );
 
-//console.log('#', 拼音反推('uinh').描述);
+console.log('#', 拼音反推('uinh').描述);
 
 // TODO 特殊字頭測試
 const throwOnly = false;
@@ -19,8 +19,7 @@ const errLimit = 30;
 let errCount = 0;
 for (const std of Qieyun.iter音韻地位()) {
   const latinigo = tshet(std, std.代表字, {
-    莊組真韻開口歸臻: false, // TODO 處理 true 的情況
-    幫組咍韻歸灰: true,
+    脣音咍韻歸灰韻: true,
   });
   try {
     const res = 拼音反推(latinigo);
