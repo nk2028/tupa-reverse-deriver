@@ -24,14 +24,12 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
   const [介, 主, 尾] = split韻母(韻母, 音節);
 
   // 分析介音
-  if (!['', 'y', 'u', 'i', 'wi', 'w'].includes(介)) {
-    throw new Error(`不合法介音 ${介} (${音節})`);
-  }
   const 合介音 = /^[wu]/.test(介) ? 介.slice(0, 1) : null;
   const 三等介音 = /[iyu]$/.test(介) ? 介.slice(-1) : null;
 
-  function throw介音搭配() {
-    throw new Error(`不合法介音搭配 ${介}-${主} ($${音節})`);
+  function throw介音搭配(提示) {
+    const hint = 提示 ? ` 【提示：${提示}】` : '';
+    throw new Error(`不合法介音搭配 ${介}-${主}${尾} (${音節})${hint}`);
   }
 
   // 韻
@@ -43,7 +41,15 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
       : 主;
   let 韻 = 韻基到韻[尾].replace(/ /g, '')[韻基元音表.indexOf(韻基元音)];
   if (!韻 || 韻 === '　') {
-    throw new Error(`無法識別韻基 ${韻基元音}${尾} (${音節})`);
+    const 韻基 = 韻基元音 + 尾;
+    let 提示 = '';
+    if (/e?ow/.test(韻基)) {
+      提示 = '侯韻為 ou';
+    }
+    if (提示) {
+      提示 = ` 【提示：${提示}】`;
+    }
+    throw new Error(`無法識別韻基 ${韻基元音}${尾} (${音節})${提示}`);
   }
   if (韻 === '唐' && ['y', 'u'].includes(介)) {
     韻 = '陽';
@@ -53,7 +59,7 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
   let 等;
   if (['i', 'y', 'u'].includes(主)) {
     if (三等介音 && !(主 === 'i' && ['y', 'u', 'w'].includes(介))) {
-      throw介音搭配();
+      throw介音搭配(主 === 'u' ? '三等 u 不需介音' : undefined);
     }
     等 = '三';
   } else if (三等介音) {
@@ -74,13 +80,24 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
 
   // 呼
   let 呼 = null;
-  if ([...'東冬江模尤幽'].includes(韻)) {
-    !介 || (韻 === '幽' && 介 === 'y') || throw介音搭配();
+  if ([...'東冬江模尤'].includes(韻)) {
+    !介 ||
+      throw介音搭配(
+        主 === 'o' && 介.endsWith('i') ? '用鈍介音 y/u' : undefined,
+      );
   } else if (['鍾', '虞'].includes(韻)) {
     介 === 'u' || throw介音搭配();
+  } else if (韻 === '幽') {
+    !介 || 介 === 'y' || throw介音搭配();
   } else {
     if (['o', 'u', 'y'].includes(主) && 介 === 'w') {
-      throw介音搭配();
+      throw介音搭配(
+        主 === 'o'
+          ? '合口 o 不需 w 介音'
+          : 主 === 'y'
+          ? 'y 所對應合口為 u'
+          : undefined,
+      );
     }
     const 拼寫呼 =
       合介音 || (['o', 'u'].includes(主) && !介 && 韻 !== '覃') ? '合' : '開';
@@ -109,7 +126,7 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
 
     // 主元音搭配
     if (['o', 'a'].includes(主) && !鈍介音) {
-      throw介音搭配();
+      throw介音搭配('用鈍介音 y/u');
     }
     if (韻 === '麻' && 鈍介音) {
       throw介音搭配();
@@ -225,7 +242,16 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
     return new Qieyun.音韻地位(母, 呼, 等, 重, 韻, 聲);
   } catch (e) {
     const 描述 = `${母}${呼 || ''}${等}${重 || ''}${韻}${聲}`;
-    throw new Error(`音韻地位「${描述}」不合法 (${音節}): ${e.message}`);
+    let 提示 = '';
+    if (等 === '三' && ['寒', '談'].includes(韻)) {
+      提示 = `${韻 === '寒' ? '元' : '嚴凡'}韻為 y/uo${
+        韻 === '寒' ? 'n' : 'm'
+      }`;
+    }
+    if (提示) {
+      提示 = ` 【提示：${提示}】`;
+    }
+    throw new Error(`音韻地位「${描述}」不合法 (${音節}): ${e.message}${提示}`);
   }
 }
 
@@ -243,6 +269,10 @@ function split音節(音節) {
     聲 = '入';
     stripped =
       stripped.slice(0, -1) + { k: 'ng', t: 'n', p: 'm' }[stripped.slice(-1)];
+  } else if (/x$/.exec(音節)) {
+    throw new Error(
+      `無法識別聲調 ${音節.slice(-1)} (${音節})` + `【提示：上聲用 -q】`,
+    );
   } else {
     聲 = '平';
   }
@@ -295,7 +325,15 @@ function split韻母(韻母, 音節 = '?') {
   if (!主) {
     throw new Error(`無法識別韻母 ${韻母} (${音節})`);
   }
-  return [元音.slice(0, -主.length), 主, 尾];
+  const 介 = 元音.slice(0, -主.length);
+  if (!['', 'y', 'u', 'i', 'wi', 'w'].includes(介)) {
+    let 提示 = '';
+    if (/[iu]$/.test(主) && /[aeiouy]$/.test(介)) {
+      提示 = ' 【提示：切韻拼音用 -j -w 尾】';
+    }
+    throw new Error(`無法識別韻母 ${韻母}  (${音節})${提示}`);
+  }
+  return [介, 主, 尾];
 }
 
 const 聲母表 = `
