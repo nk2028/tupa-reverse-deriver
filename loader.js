@@ -1,11 +1,11 @@
 // @ts-check
 
-import * as fs from 'fs';
-import * as readline from 'readline';
+const fs = require('fs');
+const readline = require('readline');
 
-import Qieyun from 'qieyun';
+const Qieyun = require('qieyun');
 
-export async function* loadUnt(checkAmbiguity = false) {
+exports.loadUnt = async function* loadUnt(checkAmbiguity = false) {
   const fin = fs.createReadStream('data-unt.txt');
   const rl = readline.createInterface({
     input: fin,
@@ -54,9 +54,9 @@ export async function* loadUnt(checkAmbiguity = false) {
       }
     }
   }
-}
+};
 
-export function* loadQieyun() {
+exports.loadQieyun = function* loadQieyun() {
   for (const 地位 of Qieyun.iter音韻地位()) {
     yield {
       地位,
@@ -79,7 +79,7 @@ export function* loadQieyun() {
       字頭,
     };
   }
-}
+};
 
 const tshet = Function(
   '音韻地位',

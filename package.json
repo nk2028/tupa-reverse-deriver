@@ -2,8 +2,12 @@
   "name": "tshet-reverse-deriver",
   "version": "0.1.0",
   "description": "切韻拼音反推音韻地位",
-  "type": "module",
   "main": "index.js",
+  "module": "index.mjs",
+  "exports": {
+    "require": "./index.js",
+    "import": "./index.mjs"
+  },
   "scripts": {
     "test": "node test.js"
   },

@@ -1,8 +1,8 @@
 // @ts-check
 
-import 拼音反推 from './index.js';
+const 拼音反推 = require('./index');
 
-import { loadQieyun, loadUnt } from './loader.js';
+const { loadQieyun, loadUnt } = require('./loader');
 
 /**
  * @typedef {object} Item

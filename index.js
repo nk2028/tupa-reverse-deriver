@@ -1,8 +1,8 @@
 // @ts-check
 
-import Qieyun from 'qieyun';
+const Qieyun = require('qieyun');
 
-export default 拼音反推;
+module.exports = 拼音反推;
 
 /**
  * @param {string} 音節
@@ -12,7 +12,7 @@ export default 拼音反推;
  * - 2：不規則小韻均個別反推
  * @returns {Qieyun.音韻地位}
  */
-export function 拼音反推(音節, 反推不規則小韻 = 1) {
+function 拼音反推(音節, 反推不規則小韻 = 1) {
   音節 = 音節.toLowerCase();
   // 特別允許的例外拼寫，跳過常規分析
   switch (音節) {
