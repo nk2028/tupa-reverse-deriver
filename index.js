@@ -260,42 +260,53 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
  * @returns {[string, string, string]}
  */
 function split音節(音節) {
-  let stripped = 音節;
+  let rest = 音節;
+
+  let 母;
+  if (/^[yu]/.test(rest)) {
+    母 = '云';
+  } else {
+    const match = /^[^aeiouwy]+/.exec(rest);
+    if (!match) {
+      throw new Error(`無法識別聲母 (${音節})`);
+    }
+    const 母拼寫 = match[0];
+    母 = 聲母表[母拼寫];
+    if (!母) {
+      let 提示 = '';
+      let 糾正 = 聲母糾正表[母拼寫];
+      if (糾正) {
+        if (!(糾正 instanceof Array)) {
+          糾正 = [糾正];
+        }
+        提示 = 糾正
+          .map((/** @type {string} */ x) => `${聲母表[x]}母為 ${x}`)
+          .join('、');
+      }
+      if (提示) {
+        提示 = ` 【提示：${提示}】`;
+      }
+      throw new Error(`無法識別聲母 ${母拼寫} (${音節})${提示}`);
+    }
+    rest = rest.slice(母拼寫.length);
+  }
+
   let 聲;
-  if (/[qh]$/.test(音節)) {
-    聲 = { q: '上', h: '去' }[音節.slice(-1)];
-    stripped = stripped.slice(0, -1);
-  } else if (/[ktp]$/.test(音節)) {
+  if (/[qh]$/.test(rest)) {
+    聲 = { q: '上', h: '去' }[rest.slice(-1)];
+    rest = rest.slice(0, -1);
+  } else if (/[ktp]$/.test(rest)) {
     聲 = '入';
-    stripped =
-      stripped.slice(0, -1) + { k: 'ng', t: 'n', p: 'm' }[stripped.slice(-1)];
-  } else if (/x$/.exec(音節)) {
+    rest = rest.slice(0, -1) + { k: 'ng', t: 'n', p: 'm' }[rest.slice(-1)];
+  } else if (/x$/.exec(rest)) {
     throw new Error(
-      `無法識別聲調 ${音節.slice(-1)} (${音節})` + `【提示：上聲用 -q】`,
+      `無法識別聲調 ${rest.slice(-1)} (${音節})` + `【提示：上聲用 -q】`,
     );
   } else {
     聲 = '平';
   }
-  let 母;
-  if (/^[yu]/.test(stripped)) {
-    母 = '云';
-  } else {
-    const 聲母項 = 聲母表.reduce((cur, 聲母項) => {
-      const [name, spelling] = 聲母項;
-      if (stripped.startsWith(spelling)) {
-        if (cur === null || spelling.length > cur[1].length) {
-          return 聲母項;
-        }
-      }
-      return cur;
-    }, null);
-    if (!聲母項) {
-      throw new Error(`無法識別聲母 (${音節})`);
-    }
-    母 = 聲母項[0];
-    stripped = stripped.slice(聲母項[1].length);
-  }
-  return [母, 聲, stripped];
+
+  return [母, 聲, rest];
 }
 
 /**
@@ -336,7 +347,8 @@ function split韻母(韻母, 音節 = '?') {
   return [介, 主, 尾];
 }
 
-const 聲母表 = `
+const 聲母表 = Object.fromEntries(
+  `
   幫 p   滂 ph   並 b   明 m
   端 t   透 th   定 d   泥 n  來 l
   知 tr  徹 trh  澄 dr  孃 nr
@@ -346,15 +358,16 @@ const 聲母表 = `
   莊 tsr 初 tsrh 崇 dzr 生 sr 俟 zr
   章 tj  昌 tjh  常 dj  書 sj 船 zj 日 nj 以 j
 `
-  .trim()
-  .split(/\s+/)
-  .reduce((arr, s, i) => {
-    if (i % 2 === 0) {
-      arr.push([]);
-    }
-    arr[arr.length - 1].push(s);
-    return arr;
-  }, []);
+    .trim()
+    .split(/\s+/)
+    .reduce((arr, s, i) => {
+      if (i % 2 === 0) {
+        arr.push([]);
+      }
+      arr[arr.length - 1].unshift(s);
+      return arr;
+    }, []),
+);
 
 const 韻基元音表 = `
   i     y  u  ou
@@ -374,4 +387,22 @@ const 韻基到韻 = {
   n:  '眞欣文　 先山痕魂　 仙元元 刪寒',
   w:  '幽　　　 蕭　　　　 宵　　 肴豪',
   m:  '侵　　　 添咸　覃　 鹽嚴凡 銜談',
+};
+
+const 聲母糾正表 = {
+  // h 應置後
+  thr: 'trh',
+  tshr: 'tsrh',
+  thj: 'tjh',
+  // 章組
+  tsj: 'tj',
+  tsjh: 'tjh',
+  tshj: 'tjh',
+  dzj: 'dj',
+  // 其他
+  x: ['h', 'gh'],
+  c: ['ts', 'tj'],
+  ch: ['tsh', 'tjh'],
+  sh: 'sj',
+  zh: 'zj',
 };
