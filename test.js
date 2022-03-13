@@ -22,7 +22,9 @@ async function runTestOn(
   throwOnly = false,
 ) {
   let errCount = 0;
+  let runCount = 0;
   for await (const { 地位: std, 拼音, 字頭 } of iter) {
+    runCount++;
     try {
       const res = 拼音反推(拼音, 不規則小韻);
       let correct = res.等於(std);
@@ -51,13 +53,52 @@ async function runTestOn(
   }
   if (errCount) {
     console.log(
-      `${errCount}${errCount === errLimit ? '+' : ''} testo(j) malsukcesa(j)`,
+      `${errCount}${errCount === errLimit ? '+' : ''}/${runCount}${
+        errCount === errLimit ? '+' : ''
+      } testo(j) malsukcesa(j)`,
     );
     return false;
   } else {
-    console.log('Ĉiuj testoj estas sukcesaj');
+    console.log(`Ĉiuj ${runCount} testoj estas sukcesaj.`);
     return true;
   }
+}
+
+function testInvalid() {
+  /** @type {[string, string | RegExp][]} */
+  const data = [
+    ['ngiox', /【提示：上聲用 -q】/],
+    ['ngioq', /【提示：用鈍介音 y\/u】/],
+    ['ngyan', /【提示：元韻為 y\/uon】/],
+    ['qow', /無法識別韻基.*【提示：侯韻為 ou】/],
+    ['qai', /無法識別韻母.*【提示：切韻拼音用 -j -w 尾】/],
+    ['tshryet', /無法識別聲母.*【提示：初母為 tsrh】/],
+    ['kyung', /不合法介音搭配.*【提示：三等 u 不需介音】/],
+    ['pwan', /不合法脣音字拼寫/],
+    ['tryin', /莊組以外銳音聲母不可配B類/],
+  ];
+
+  let errCount = 0;
+  for (const [拼音, expected] of data) {
+    try {
+      const res = 拼音反推(拼音);
+      errCount++;
+      console.log(`${拼音}: Erarenda, sed ${res.描述} liverita`);
+    } catch (e) {
+      if (e.message.search(expected) === -1) {
+        console.log(`${拼音}: Erarmesaĝo ne enhavas \`${expected}':`, e);
+        errCount++;
+      }
+    }
+  }
+
+  if (errCount > 0) {
+    console.log(`${errCount}/${data.length} testo(j) malsukcesa(j)`);
+  } else {
+    console.log(`Ĉiuj ${data.length} testoj estas sukcesaj.`);
+  }
+
+  return errCount === 0;
 }
 
 //console.log('#', 拼音反推('uinh').描述);
@@ -65,10 +106,19 @@ async function runTestOn(
 // XXX 測試非法拼寫
 
 (async () => {
+  let success = true;
   console.log('Testoj de datumoj de unt');
-  await runTestOn(loadUnt());
+  success = (await runTestOn(loadUnt())) && success;
 
   console.log();
   console.log('Testoj de Qieyun.iter音韻地位()');
-  await runTestOn(loadQieyun(), 2);
-})();
+  success = (await runTestOn(loadQieyun(), 2)) && success;
+
+  console.log();
+  console.log('Testoj de nevalidaj latinigoj');
+  success = testInvalid() && success;
+
+  return success;
+})().then((res) => {
+  process.exit(res ? 0 : 1);
+});
