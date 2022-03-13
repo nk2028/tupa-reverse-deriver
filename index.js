@@ -13,6 +13,7 @@ export default 拼音反推;
  * @returns {Qieyun.音韻地位}
  */
 export function 拼音反推(音節, 反推不規則小韻 = 1) {
+  音節 = 音節.toLowerCase();
   // 特別允許的例外拼寫，跳過常規分析
   switch (音節) {
     case 'biangq':
@@ -82,9 +83,7 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
   let 呼 = null;
   if ([...'東冬江模尤'].includes(韻)) {
     !介 ||
-      throw介音搭配(
-        主 === 'o' && 介.endsWith('i') ? '用鈍介音 y/u' : null,
-      );
+      throw介音搭配(主 === 'o' && 介.endsWith('i') ? '用鈍介音 y/u' : null);
   } else if (['鍾', '虞'].includes(韻)) {
     介 === 'u' || throw介音搭配();
   } else if (韻 === '幽') {
