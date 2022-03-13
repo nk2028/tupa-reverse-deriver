@@ -59,7 +59,7 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
   let 等;
   if (['i', 'y', 'u'].includes(主)) {
     if (三等介音 && !(主 === 'i' && ['y', 'u', 'w'].includes(介))) {
-      throw介音搭配(主 === 'u' ? '三等 u 不需介音' : undefined);
+      throw介音搭配(主 === 'u' ? '三等 u 不需介音' : null);
     }
     等 = '三';
   } else if (三等介音) {
@@ -83,7 +83,7 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
   if ([...'東冬江模尤'].includes(韻)) {
     !介 ||
       throw介音搭配(
-        主 === 'o' && 介.endsWith('i') ? '用鈍介音 y/u' : undefined,
+        主 === 'o' && 介.endsWith('i') ? '用鈍介音 y/u' : null,
       );
   } else if (['鍾', '虞'].includes(韻)) {
     介 === 'u' || throw介音搭配();
@@ -96,7 +96,7 @@ export function 拼音反推(音節, 反推不規則小韻 = 1) {
           ? '合口 o 不需 w 介音'
           : 主 === 'y'
           ? 'y 所對應合口為 u'
-          : undefined,
+          : null,
       );
     }
     const 拼寫呼 =
