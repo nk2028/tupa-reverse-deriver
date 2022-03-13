@@ -73,6 +73,7 @@ function testInvalid() {
     ['qow', /無法識別韻基.*【提示：侯韻為 ou】/],
     ['qai', /無法識別韻母.*【提示：切韻拼音用 -j -w 尾】/],
     ['tshryet', /無法識別聲母.*【提示：初母為 tsrh】/],
+    ['cyang', /【提示：精母為 ts、章母為 tj】/],
     ['kyung', /不合法介音搭配.*【提示：三等 u 不需介音】/],
     ['pwan', /不合法脣音字拼寫/],
     ['tryin', /莊組以外銳音聲母不可配B類/],
@@ -118,7 +119,5 @@ function testInvalid() {
   console.log('Testoj de nevalidaj latinigoj');
   success = testInvalid() && success;
 
-  return success;
-})().then((res) => {
-  process.exit(res ? 0 : 1);
-});
+  process.exit(success ? 0 : 1);
+})();
