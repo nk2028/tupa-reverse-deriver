@@ -15,5 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "qieyun": "^0.12.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.11.0"
   }
 }

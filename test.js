@@ -23,7 +23,7 @@ async function runTestOn(
 ) {
   let errCount = 0;
   let runCount = 0;
-  for await (const { 地位: std, 拼音, 字頭 } of iter) {
+  for await (const { 地位: std, 拼音 } of iter) {
     runCount++;
     try {
       const res = 拼音反推(拼音, 不規則小韻);

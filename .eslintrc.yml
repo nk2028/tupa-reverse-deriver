@@ -1,0 +1,16 @@
+env:
+  browser: true
+  commonjs: true
+  es2021: true
+  node: true
+ignorePatterns:
+  - tshet.js
+extends: eslint:recommended
+parserOptions:
+  ecmaVersion: latest
+rules: {}
+overrides:
+  - files:
+      - '**/*.mjs'
+    parserOptions:
+      sourceType: module
