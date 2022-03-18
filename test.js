@@ -104,8 +104,6 @@ function testInvalid() {
 
 //console.log('#', 拼音反推('uinh').描述);
 
-// XXX 測試非法拼寫
-
 (async () => {
   let success = true;
   console.log('Testoj de datumoj de unt');
