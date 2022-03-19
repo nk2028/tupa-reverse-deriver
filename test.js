@@ -77,6 +77,7 @@ function testInvalid() {
     ['kyung', /不合法介音搭配.*【提示：三等 u 不需介音】/],
     ['pwan', /不合法脣音字拼寫/],
     ['tryin', /莊組以外銳音聲母不可配B類/],
+    ['wuo', /無法識別聲母.*【提示：云母不寫】/],
   ];
 
   let errCount = 0;

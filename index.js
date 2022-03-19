@@ -255,10 +255,7 @@ function split音節(音節) {
     母 = '云';
   } else {
     const match = /^[^aeiouwy]+/.exec(rest);
-    if (!match) {
-      throw new Error(`無法識別聲母 (${音節})`);
-    }
-    const 母拼寫 = match[0];
+    const 母拼寫 = match ? match[0] : '';
     母 = 聲母表[母拼寫];
     if (!母) {
       let 提示 = '';
@@ -270,6 +267,8 @@ function split音節(音節) {
         提示 = 糾正
           .map((/** @type {string} */ x) => `${聲母表[x]}母為 ${x}`)
           .join('、');
+      } else if (/^w[yu]/.test(rest)) {
+        提示 = '云母不寫';
       }
       if (提示) {
         提示 = ` 【提示：${提示}】`;
