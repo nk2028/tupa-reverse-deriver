@@ -71,6 +71,7 @@ exports.loadQieyun = function* loadQieyun() {
     ['知開二庚上', '打'],
     ['影開三蒸入', '抑'],
     ['曉三幽平', '烋'],
+    ['溪三尤平', '丘'],
   ]) {
     const 地位 = Qieyun.音韻地位.from描述(描述);
     yield {
