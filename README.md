@@ -5,7 +5,7 @@
 ## 用法
 
 ```javascript
-import 拼音反推 from 'tshet-reverse-deriver';
+import 拼音反推 from 'tupa-reverse-deriver';
 
 let 地位 = 拼音反推('tshet');
 地位.描述; // => 清開四先入

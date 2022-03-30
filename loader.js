@@ -60,7 +60,7 @@ exports.loadQieyun = function* loadQieyun() {
   for (const 地位 of Qieyun.iter音韻地位()) {
     yield {
       地位,
-      拼音: tshet(地位, 地位.代表字, {
+      拼音: tupa(地位, 地位.代表字, {
         脣音咍韻歸灰韻: true,
       }),
       字頭: 地位.代表字,
@@ -75,13 +75,13 @@ exports.loadQieyun = function* loadQieyun() {
     const 地位 = Qieyun.音韻地位.from描述(描述);
     yield {
       地位,
-      拼音: tshet(地位, 字頭, 默認選項),
+      拼音: tupa(地位, 字頭, 默認選項),
       字頭,
     };
   }
 };
 
-const tshet = Function(
+const tupa = Function(
   '音韻地位',
   '字頭',
   '選項',
@@ -89,7 +89,7 @@ const tshet = Function(
 );
 
 const 默認選項 = Object.fromEntries(
-  tshet().map((entry) => {
+  tupa().map((entry) => {
     if (typeof entry[1] === 'boolean') {
       return entry;
     } else if (entry[1] instanceof Array) {
