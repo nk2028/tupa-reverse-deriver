@@ -10,7 +10,7 @@ import 拼音反推 from 'tupa-reverse-deriver';
 let 地位 = 拼音反推('tshet');
 地位.描述; // => 清開四先入
 
-拼音反推('uinh').描述; // => 云合三真去
+拼音反推('uinh').描述; // => 云合三眞去
 
 拼音反推('ngyoq').描述; // => 疑開三魚上
 拼音反推('ngiox').描述; // Error: 無法識別聲調 x (ngiox)【提示：上聲用 -q】
