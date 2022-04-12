@@ -13,11 +13,10 @@ const { loadQieyun, loadV2 } = require('./loader');
 
 /**
  * @param {AsyncIterable<Item> | Iterable<Item>} iter
- * @param {number} 不規則小韻
  */
 async function runTestOn(
   iter,
-  不規則小韻 = 1,
+  不規則小韻 = true,
   errLimit = 30,
   throwOnly = false,
 ) {
