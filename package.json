@@ -14,7 +14,7 @@
   "author": "SyiMyuZya",
   "license": "MIT",
   "dependencies": {
-    "qieyun": "^0.12.3"
+    "qieyun": "syimyuzya/qieyun-js#dist-dev"
   },
   "devDependencies": {
     "eslint": "^8.11.0"

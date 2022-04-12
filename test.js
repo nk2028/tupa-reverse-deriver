@@ -2,7 +2,7 @@
 
 const 拼音反推 = require('./index');
 
-const { loadQieyun, loadUnt } = require('./loader');
+const { loadQieyun, loadV2 } = require('./loader');
 
 /**
  * @typedef {object} Item
@@ -107,8 +107,8 @@ function testInvalid() {
 
 (async () => {
   let success = true;
-  console.log('Testoj de datumoj de unt');
-  success = (await runTestOn(loadUnt())) && success;
+  console.log('Testoj de datumoj de v2音韻地位');
+  success = (await runTestOn(loadV2())) && success;
 
   console.log();
   console.log('Testoj de Qieyun.iter音韻地位()');

@@ -4,99 +4,57 @@ const fs = require('fs');
 const readline = require('readline');
 
 const Qieyun = require('qieyun');
+global.Qieyun = Qieyun;
 
-exports.loadUnt = async function* loadUnt(checkAmbiguity = false) {
-  const fin = fs.createReadStream('data-unt.txt');
+exports.loadQieyun = function* loadQieyun() {
+  for (const 地位 of Qieyun.資料.iter音韻地位()) {
+    const 字頭 = Qieyun.資料.query音韻地位(地位)[0].字頭;
+    const 拼音 = tupa(地位);
+    yield { 地位, 字頭, 拼音 };
+  }
+};
+
+exports.loadV2 = async function* loadV2() {
+  const fin = fs.createReadStream('data/v2音韻地位.csv');
   const rl = readline.createInterface({
     input: fin,
     crlfDelay: Infinity,
   });
-  let row = 0;
-  const uniq = new Map();
+  let rowNum = 0;
   for await (const line of rl) {
-    row++;
-    if (row <= 1) {
+    rowNum++;
+    if (rowNum <= 1) {
       continue;
     }
-    const fields = line.trim().split(/\s+/);
-    if (fields[2] === '(deleted)') {
+    const [, 地位str, 字頭str, , 拼音str] = line.trimEnd().split(',');
+    if (地位str === '(deleted)') {
       continue;
     }
-
-    if (checkAmbiguity) {
-      if (!uniq.has(fields[3])) {
-        uniq.set(fields[3], []);
+    const 地位s = 地位str.split('/');
+    const 字頭s = 字頭str.split('/');
+    const 拼音s = 拼音str.split('/');
+    for (let i = 0; i < 地位s.length; i++) {
+      const 地位 = Qieyun.音韻地位.from描述(地位s[i]);
+      const 拼音 = tupa(地位);
+      if (拼音 !== 拼音s[i]) {
+        console.log(`Averto: derivita ${拼音} != ${拼音s[i]}`);
       }
-      uniq.get(fields[3]).push(fields);
-    }
-
-    const 地位 = Qieyun.音韻地位.from編碼(fields[2]);
-    yield {
-      地位,
-      字頭: fields[1],
-      拼音: fields[3],
-    };
-  }
-
-  if (checkAmbiguity) {
-    for (const [latinigo, rows] of uniq) {
-      if (rows.length <= 1) {
-        continue;
-      }
-      const codes = new Set(rows.map((row) => row[2]));
-      if (codes.size > 1) {
-        console.log(
-          `Averto: Multaj pozicioj kun la sama latinigo: ${latinigo}`,
-        );
-        for (const row of rows) {
-          console.log(row);
-        }
-      }
+      yield {
+        地位,
+        字頭: 字頭s[i],
+        拼音: 拼音s[i],
+      };
     }
   }
 };
 
-exports.loadQieyun = function* loadQieyun() {
-  for (const 地位 of Qieyun.iter音韻地位()) {
-    yield {
-      地位,
-      拼音: tupa(地位, 地位.代表字, {
-        脣音咍韻歸灰韻: true,
-      }),
-      字頭: 地位.代表字,
-    };
-  }
-  for (const [描述, 字頭] of [
-    ['匣合一灰上', '倄'],
-    ['知開二庚上', '打'],
-    ['影開三蒸入', '抑'],
-    ['曉三幽平', '烋'],
-    ['溪三尤平', '丘'],
-  ]) {
-    const 地位 = Qieyun.音韻地位.from描述(描述);
-    yield {
-      地位,
-      拼音: tupa(地位, 字頭, 默認選項),
-      字頭,
-    };
-  }
-};
-
-const tupa = Function(
-  '音韻地位',
-  '字頭',
-  '選項',
-  fs.readFileSync('tshet.js').toString(),
-);
-
-const 默認選項 = Object.fromEntries(
-  tupa().map((entry) => {
-    if (typeof entry[1] === 'boolean') {
-      return entry;
-    } else if (entry[1] instanceof Array) {
-      return [entry[0], entry[1][0]];
-    } else {
-      throw new Error(`Nekonata agordo: ${entry}`);
-    }
-  }),
+const tupa = Qieyun.推導方案.建立(
+  /** @type {Qieyun.推導方案.原始推導函數<string>} */ (
+    new Function(
+      '音韻地位',
+      '字頭',
+      '選項',
+      fs.readFileSync('data/tupa.js').toString(),
+    )
+  ),
 );
