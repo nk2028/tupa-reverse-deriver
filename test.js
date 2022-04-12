@@ -112,7 +112,7 @@ function testInvalid() {
 
   console.log();
   console.log('Testoj de Qieyun.iter音韻地位()');
-  success = (await runTestOn(loadQieyun(), 2)) && success;
+  success = (await runTestOn(loadQieyun())) && success;
 
   console.log();
   console.log('Testoj de nevalidaj latinigoj');
