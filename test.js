@@ -16,7 +16,6 @@ const { loadQieyun, loadV2 } = require('./loader');
  */
 async function runTestOn(
   iter,
-  不規則小韻 = true,
   errLimit = 30,
   throwOnly = false,
 ) {
@@ -25,16 +24,8 @@ async function runTestOn(
   for await (const { 地位: std, 拼音 } of iter) {
     runCount++;
     try {
-      const res = 拼音反推(拼音, 不規則小韻);
+      const res = 拼音反推(拼音);
       let correct = res.等於(std);
-      if (
-        不規則小韻 &&
-        std.屬於('崇母 開口 眞臻韻 入聲') &&
-        res.屬於('崇母 開口 眞臻韻 入聲')
-      ) {
-        // 「𪗨」小韻於兩韻重出，實質全同，推為哪個均算正確
-        correct = true;
-      }
       if (!throwOnly && !correct) {
         console.log(std.描述, 拼音);
         console.log('  Eraro:', res.描述);
