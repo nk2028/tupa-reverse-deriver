@@ -1,6 +1,6 @@
 {
   "name": "tupa-reverse-deriver",
-  "version": "0.2.0",
+  "version": "0.2.0-beta",
   "description": "切韻拼音反推音韻地位",
   "main": "index.js",
   "module": "index.mjs",
