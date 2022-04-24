@@ -1,6 +1,6 @@
 {
   "name": "tupa-reverse-deriver",
-  "version": "0.2.0-beta",
+  "version": "0.2.0",
   "description": "切韻拼音反推音韻地位",
   "main": "index.js",
   "module": "index.mjs",
@@ -14,7 +14,7 @@
   "author": "SyiMyuZya",
   "license": "MIT",
   "dependencies": {
-    "qieyun": "syimyuzya/qieyun-js#dist-dev"
+    "qieyun": "^0.13.0"
   },
   "devDependencies": {
     "eslint": "^8.11.0"
